@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="styles/prodavachnik.css" />
     <link href="https://fonts.googleapis.com/css?family=Lato|Open+Sans" rel="stylesheet">
 </head>
+
 <body>
 <header id="menu" class="menu">
     <a href="#" id="linkHome" class="menu-item" >Home</a>
@@ -23,12 +24,11 @@
 </header>
 
 <main>
-	<section id="loadingBox" class="loadingBox">Loading ...</section>
+    <section id="loadingBox" class="loadingBox">Loading ...</section>
 
     <section id="infoBox" class="infoBox">Info</section>
 
     <section id="errorBox" class="errorBox">Error</section>
-
 
     <section id="viewHome" class="viewHome">
         <h1 class="title">Welcome</h1>
@@ -56,8 +56,8 @@
             <div><input type="button" id="buttonRegisterUser" value="Register" /></div>
         </form>
     </section>
-	
-	    <section id="viewAds" class="viewAds">
+
+    <section id="viewAds" class="viewAds">
         <h1 class="titleForm">Advertisements</h1>
         <div id="ads" class="ads">
             <table>
@@ -85,23 +85,24 @@
         </div>
     </section>
 
-    <section id="viewDetailsAd" class="viewDetailsAd">
-    </section>
     <section id="viewCreateAd" class="viewCreateAd">
         <h1 class="titleForm">Create new Advertisement</h1>
         <form id="formCreateAd" class="form">
             <div>Title:</div>
             <div><input type="text" name="title" required /></div>
-			<div>Description:</div>
-			<div><textarea name="description" rows="10" required></textarea></div>
+            <div>Description:</div>
+            <div><textarea name="description" rows="10" required></textarea></div>
             <div>Date Published:</div>
             <div><input type="date" name="datePublished" required /></div>
             <div>Price:</div>
             <div><input type="number" step="0.01" name="price" required /></div>
-			<div>Image:</div>
-			<div><input type="text" name="image" required /></div>
+            <div>Image:</div>
+            <div><input type="text" name="image" required /></div>
             <div><input type="button" id="buttonCreateAd" value="Create" /></div>
         </form>
+    </section>
+
+    <section id="viewDetailsAd" class="viewDetailsAd">
     </section>
 
     <section id="viewEditAd" class="viewEditAd">
@@ -111,10 +112,14 @@
             <div><input type="hidden" name="publisher" required /></div>
             <div>Title:</div>
             <div><input type="text" name="title" required /></div>
+            <div>Description:</div>
+            <div><textarea name="description" rows="10" required></textarea></div>
             <div>Date Published:</div>
             <div><input type="date" name="datePublished" required /></div>
             <div>Price:</div>
             <div><input type="number" step="0.01" name="price" required /></div>
+            <div>Image:</div>
+            <div><input type="text" name="image" required /></div>
             <div><input type="button" id="buttonEditAd" value="Edit" /></div>
         </form>
     </section>
