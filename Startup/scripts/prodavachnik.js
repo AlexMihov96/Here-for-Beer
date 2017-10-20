@@ -1,4 +1,10 @@
 function startApp() {
+	
+	if (sessionStorage.getItem('authToken') !== null) {
+        let username = sessionStorage.getItem('username');
+        $('#loggedInUser').text("Welcome, " + username + "!");
+    }
+
     showHideMenuLinks();
     showHomeView();
 
@@ -13,6 +19,18 @@ function startApp() {
     $("#buttonLoginUser").click(loginUser);
     $("#buttonRegisterUser").click(registerUser);
 
+	    // Bind the info / error boxes
+    $("#infoBox, #errorBox").click(function() {
+        $(this).fadeOut();
+    });
+
+    // Attach AJAX "loading" event listener
+    $(document).on({
+        ajaxStart: function() { $("#loadingBox").show() },
+        ajaxStop: function() { $("#loadingBox").hide() }
+    });
+
+	
     const kinveyBaseUrl = "https://mock.api.com/";
     const kinveyAppKey = "kid_rk";
     const kinveyAppSecret = "736804a668";
@@ -31,13 +49,39 @@ function startApp() {
             $("#linkRegister").show();
             $("#linkListAds").hide();
             $("#linkLogout").hide();
+            $("#loggedInUser").hide();
+
         } else {
             // We have logged in user
             $("#linkLogin").hide();
             $("#linkRegister").hide();
             $("#linkListAds").show();
             $("#linkLogout").show();
+			$("#loggedInUser").show();
+
         }
+    }
+	
+	function showInfo(message) {
+        $('#infoBox').text(message);
+        $('#infoBox').show();
+        setTimeout(function() {
+            $('#infoBox').fadeOut();
+        }, 3000);
+    }
+
+    function showError(errorMsg) {
+        $('#errorBox').text("Error: " + errorMsg);
+        $('#errorBox').show();
+    }
+
+    function handleAjaxError(response) {
+        let errorMsg = JSON.stringify(response);
+        if (response.readyState === 0)
+            errorMsg = "Cannot connect due to network error.";
+        if (response.responseJSON && response.responseJSON.description)
+            errorMsg = response.responseJSON.description;
+        showError(errorMsg);
     }
 
     function showHomeView() {
@@ -70,13 +114,15 @@ function startApp() {
             url: kinveyLoginUrl,
             headers: kinveyAuthHeaders,
             data: userData,
-            success: loginSuccess
+            success: loginSuccess,
+            error: handleAjaxError
         });
 
         function loginSuccess(userInfo) {
             saveAuthInSession(userInfo);
             showHideMenuLinks();
             listAdverts();
+			showInfo('Login successful.');
         }
     }
 
@@ -85,6 +131,10 @@ function startApp() {
         sessionStorage.setItem('authToken', userAuth);
         let userId = userInfo._id;
         sessionStorage.setItem('userId', userId);
+		let username = userInfo.username;
+        sessionStorage.setItem('username', username);
+        $('#loggedInUser').text("Welcome, " + username + "!");
+
     }
 
     // user/register
@@ -104,7 +154,8 @@ function startApp() {
             url: kinveyRegisterUrl,
             headers: kinveyAuthHeaders,
             data: userData,
-            success: registerSuccess
+            success: registerSuccess,
+            error: handleAjaxError
         });
 
         function registerSuccess(userInfo) {
@@ -112,6 +163,7 @@ function startApp() {
             saveAuthInSession(userInfo);
             showHideMenuLinks();
             listAdverts();
+			showInfo('User registration successful.');
         }
     }
 
@@ -121,6 +173,7 @@ function startApp() {
         $('#loggedInUser').text("");
         showHideMenuLinks();
         showHomeView();
+		showInfo('Logout successful.');
     }
 
     // advertisement/all
@@ -136,10 +189,12 @@ function startApp() {
             method: "GET",
             url: kinveyAdvertsUrl,
             headers: kinveyAuthHeaders,
-            success: loadAdvertsSuccess
+            success: loadAdvertsSuccess,
+            error: handleAjaxError
         });
 
         function loadAdvertsSuccess(adverts) {
+			showInfo('Advertisements loaded.');
             if (adverts.length === 0) {
                 $('#ads').text('No advertisements available.');
             } else {
