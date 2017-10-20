@@ -57,13 +57,14 @@
         </form>
     </section>
 	
-	<section id="viewAds" class="viewAds">
+	    <section id="viewAds" class="viewAds">
         <h1 class="titleForm">Advertisements</h1>
         <div id="ads" class="ads">
             <table>
                 <tr>
                     <th>Title</th>
                     <th>Publisher</th>
+                    <th>Description</th>
                     <th>Price</th>
                     <th>Date Published</th>
                     <th>Actions</th>
@@ -71,9 +72,11 @@
                 <tr>
                     <td>Ad title</td>
                     <td>Ad author</td>
+                    <td>Ad description</td>
                     <td>Price</td>
                     <td>Date published</td>
                     <td>
+                        <a href="#">[Read more]</a>
                         <a href="#">[Delete]</a>
                         <a href="#">[Edit]</a>
                     </td>
@@ -82,6 +85,8 @@
         </div>
     </section>
 
+    <section id="viewDetailsAd" class="viewDetailsAd">
+    </section>
     <section id="viewCreateAd" class="viewCreateAd">
         <h1 class="titleForm">Create new Advertisement</h1>
         <form id="formCreateAd" class="form">
@@ -109,7 +114,6 @@
             <div><input type="button" id="buttonEditAd" value="Edit" /></div>
         </form>
     </section>
-
     <script>
         startApp();
     </script>

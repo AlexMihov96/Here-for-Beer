@@ -212,6 +212,7 @@ function startApp() {
                 let advertsTable = $('<table>')
                     .append($('<tr>').append(
                         '<th>Title</th>',
+                        '<th>Description</th>',
                         '<th>Publisher</th>',
                         '<th>Date Published</th>',
                         '<th>Price</th>',
@@ -219,6 +220,10 @@ function startApp() {
                     );
 
                 for (let advert of adverts) {
+                    let readMoreLink = $(
+`<a data-id="${advert._id}" href="#">[Read More]</a>`)
+                        .click(function() { displayAdvert($(this).attr("data-id")) });
+
 					let links = [];
 
                     if (advert._acl.creator == sessionStorage['userId']) {
@@ -228,13 +233,13 @@ function startApp() {
                             .click(function() { loadAdvertForEdit($(this).attr("data-id")) });
                         links = [deleteLink, ' ', editLink];
                     }
-
-					
                     advertsTable.append($('<tr>').append(
                         $('<td>').text(advert.title),
+                        $('<td>').text(advert.description),
                         $('<td>').text(advert.publisher),
                         $('<td>').text(advert.datePublished),
                         $('<td>').text(advert.price),
+                        $('<td>').append(readMoreLink)
 						$('<td>').append(links)
                     ));
                 }
@@ -243,7 +248,8 @@ function startApp() {
             }
         }
     }
-	
+	    function displayAdvert(advertId){
+        const kinveyAdvertUrl = kinveyBaseUrl + "appdata/" +
 	    // advertisement/create
     function createAdvert() {
         const kinveyAuthHeaders = {
@@ -318,6 +324,29 @@ function startApp() {
 
         $.ajax({
             method: "GET",
+            url: kinveyAdvertUrl,
+            headers: kinveyAuthHeaders,
+            success: displayAdvertSuccess
+        });
+
+        $('#viewDetailsAd').empty();
+
+        function displayAdvertSuccess(advert) {
+            let advertInfo = $('<div>').append(
+                $('<img>').attr("src", advert.image),
+                $('<br>'),
+                $('<label>').text('Title:'),
+                $('<h1>').text(advert.title),
+                $('<label>').text('Description:'),
+                $('<p>').text(advert.description),
+                $('<label>').text('Publisher:'),
+                $('<div>').text(advert.publisher),
+                $('<label>').text('Date:'),
+                $('<div>').text(advert.datePublished));
+
+            $('#viewDetailsAd').append(advertInfo);
+
+            showView('viewDetailsAd');
             url: kinveyBookUrl,
             headers: kinveyAuthHeaders,
             success: loadAdvertForEditSuccess,
