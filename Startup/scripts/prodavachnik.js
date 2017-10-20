@@ -248,31 +248,29 @@ function startApp() {
             }
         }
     }
-	    function displayAdvert(advertId){
+    function displayAdvert(advertId){
         const kinveyAdvertUrl = kinveyBaseUrl + "appdata/" +
-	    // advertisement/create
-    function createAdvert() {
+            kinveyAppKey + "/adverts/" + advertId;
         const kinveyAuthHeaders = {
             'Authorization': "Kinvey " + sessionStorage.getItem('authToken'),
         };
 
-        const kinveyUserUrl =
-            `${kinveyBaseUrl}user/${kinveyAppKey}/${sessionStorage.getItem('userId')}`;
-
         $.ajax({
             method: "GET",
-            url: kinveyUserUrl,
+            url: kinveyAdvertUrl,
             headers: kinveyAuthHeaders,
-            success: afterPublisherRequest,
-            error: showError
+            success: displayAdvertSuccess,
+            error: handleAjaxError
         });
 
         function afterPublisherRequest(publisher) {
             let advertData = {
                 title: $('#formCreateAd input[name=title]').val(),
+				description: $('#formCreateAd textarea[name=description]').val(),
                 publisher: publisher.username,
                 datePublished: $('#formCreateAd input[name=datePublished]').val(),
-                price: Number($('#formCreateAd input[name=price]').val())
+                price: Number($('#formCreateAd input[name=price]').val()),
+				image: $('#formCreateAd input[name=image]').val()
             };
 
             const kinveyAdvertsUrl = kinveyBaseUrl + "appdata/" + kinveyAppKey + "/adverts";
@@ -353,14 +351,17 @@ function startApp() {
             error: handleAjaxError
         });
 
-        function loadAdvertForEditSuccess(advert) {
-            $('#formEditAd input[name=id]').val(advert._id);
-            $('#formEditAd input[name=title]').val(advert.title);
-            $('#formEditAd input[name=publisher]').val(advert.publisher);
-            $('#formEditAd input[name=datePublished]').val(advert.datePublished);
-            $('#formEditAd input[name=price]').val(advert.price);
-            showView('viewEditAd');
-        }
+	function loadAdvertForEditSuccess(advert) {
+		$('#formEditAd input[name=id]').val(advert._id);
+		$('#formEditAd input[name=title]').val(advert.title);
+		$('#formEditAd input[name=publisher]').val(advert.publisher);
+		$('#formEditAd textarea[name=description]').val(advert.description);
+		$('#formEditAd input[name=datePublished]').val(advert.datePublished);
+		$('#formEditAd input[name=price]').val(advert.price);
+		$('#formEditAd input[name=image]').val(advert.image);
+		showView('viewEditAd');
+	}
+
     }
 
     // advertisement/edit POST
@@ -373,9 +374,11 @@ function startApp() {
 
         let advertData = {
             title: $('#formEditAd input[name=title]').val(),
+            description: $('#formEditAd textarea[name=description]').val(),
             publisher: $('#formEditAd input[name=publisher]').val(),
             datePublished: $('#formEditAd input[name=datePublished]').val(),
-            price: $('#formEditAd input[name=price]').val()
+            price: $('#formEditAd input[name=price]').val(),
+            image: $('#formEditAd input[name=image]').val()
         };
 
         $.ajax({
@@ -389,7 +392,7 @@ function startApp() {
 
         function editAdvertSuccess(response) {
             listAdverts();
-			showInfo('Advertisement edited.');
+            showInfo('Advertisement edited.');
         }
     }
 }
